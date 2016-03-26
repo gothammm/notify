@@ -6,6 +6,8 @@ const notifier = require('node-notifier');
 const cron = require('cron');
 const args = process.argv;
 const Job = cron.CronJob;
+const os = require('os');
+const open = require('open');
 let requestUrl, searchKey;
 args.forEach((x, i) => {
    if (x.indexOf('=') > -1 && i > 1) {
@@ -53,11 +55,12 @@ var job = new Job('*/30 * * * * *', () => {
     });
 }, () => {
     notifier.on('click', (obj, opts) => {
-       console.log(obj, opts);
+      open(requestUrl);
     });
+    let message = `Found a match, for keywords ${searchKey} ${os.type() != 'Windows_NT' ? `, <a href="${requestUrl}">Go</a>` : '' }` 
     notifier.notify({
         title: 'Found something!',
-        message: `Found a match, for the keywords ${searchKey}, <a href="${requestUrl}">Go</a>`,
+        message: message,
         sound: true, 
         wait: true
     });
